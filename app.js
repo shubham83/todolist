@@ -1,9 +1,9 @@
-//jshint esversion:6
+//jshint esversion:js6
 
 const express = require("express");
 const bodyParser = require("body-parser");
 const mongoose=require("mongoose");
-const port = process.env.PORT || 3000;
+const _= require("lodash");
 
 
 
@@ -56,7 +56,7 @@ app.get("/", function(req, res) {
 });
 
 app.get("/:customListName", function(req,res){
-  const customListName = req.params.customListName;
+  const customListName = _.capitalize(req.params.customListName);
   List.findOne({name:customListName})
   .then(function(result){
     if (result === null){
@@ -94,21 +94,31 @@ if(listName==="Today"){
 }
 
 });
+
 app.post("/delete", function(req, res){
-    const checkedItemId = req.body.checkbox.trim();
-    const listName=req.body.listName;
-    if (listName==="Today") {
 
-    }
-         
+  const checkedItemId = req.body.checkbox.trim();
+  const listName = req.body.listName;
+
+  if(listName === "Today") {
+
+    Item.findByIdAndRemove(checkedItemId).then(function(foundItem){Item.deleteOne({_id: checkedItemId})})
+
     res.redirect("/");
-});
 
+  } else {
+    List.findOneAndUpdate({name: listName}, {$pull: {items: {_id: checkedItemId}}}).then(function (foundList)
+      {
+        res.redirect("/" + listName);
+      });
+  }
+
+});
 
 app.get("/about", function(req, res){
   res.render("about");
 });
 
-app.listen(port, function() {
+app.listen(3000, function() {
   console.log("Server started on port 3000");
 });
