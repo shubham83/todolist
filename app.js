@@ -23,13 +23,13 @@ const itemSchema={
 const Item =mongoose.model("Item",itemSchema);
 
 const Item1=new Item({
-  name:"Welcome"
+  name:"Welcome To Todolist"
 });
 const Item2=new Item({
-  name:"back"
+  name:"Insert Work list"
 });
 const Item3=new Item({
-  name:"Ending"
+  name:"Click + for Save"
 });
 
 const defaultItem=[Item1,Item2,Item3];
